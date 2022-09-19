@@ -1,0 +1,37 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: swagger-ui
+  namespace: default
+  labels:
+    app: swagger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: swagger
+  template:
+    metadata:
+      labels:
+        app: swagger
+    spec:
+      containers:
+        - name: swagger-ui
+          image: swaggerapi/swagger-ui
+          imagePullPolicy: Always
+          env:
+            - name: BASE_URL
+              value: /movil-alumnos/docs
+            - name: SWAGGER_JSON
+              value: /foo/swagger.yaml          
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: swagger-conf
+              mountPath: "/foo/"
+              readOnly: true          
+      volumes:
+        - name: swagger-conf
+          configMap:
+            name: swagger-configmap       
